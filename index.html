@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="NTCUIKit.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="./NTCTable.js"></script>
+</head>
+
+<body>
+  <div class="orderDetail">
+
+    <p style="color:white; font-size:175%; margin-left: 10%; margin-top: 10%;">Sipariş Detay</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Firma Adı</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;">Halil Pazarlama</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Adres</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;padding-right: 10%;">Kozyatağı Mahallesi,
+      Marmara Cad. Şale Apt. No:7 Kadıköy/İstanbul</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Telefon</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;">0090 0216 123 4567</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">e-Posta</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;">kapinizda@halilpazarlama.com</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Ünvan</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;">Halil Pazarlama İnş. Tah. Turz. Tic.
+      Ltd. Şti.</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Fatura adresi</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%; padding-right: 10%;">Kozyatağı Mahallesi,
+      Marmara Cad. Şale Apt. No:7 Kadıköy/İstanbul</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Vergi dairesi</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;">Büyük mükellefler vd.</p>
+    <p style="color:white; font-size:75%; margin-left: 10%; margin-top: 5%;">Vergi no</p>
+    <p style="color:white; font-size:100%; margin-left: 10%; margin-top: 1%;">123456789012</p>
+
+  </div>
+  <div id="test" style="float:left; width:75%; margin: 1%;">
+  </div>
+
+  <div style="float: left; padding-left: 2%;">
+    <h1 id="myWrite"><b></b></h1><br>
+    <div style="overflow: hidden; font-size: x-large;">
+      <p id="myTotal" style="float: left;"></p>&nbsp;
+      <p id="myTL" style="float: right;"></p>
+    </div>
+  </div>
+
+</body>
+
+<script>
+  var map;
+  var comma = false;
+  function numValues(unitDigitValue, tensDigitValue) {
+    this.unitDigitValue = unitDigitValue;
+    this.tensDigitValue = tensDigitValue;
+  }
+  var valueHolder = [];
+  var tempNumbers = [];
+
+  valueHolder['0'] = new numValues(unitDigitValue = '', tensDigitValue = '');
+  valueHolder['1'] = new numValues(unitDigitValue = 'bir', tensDigitValue = 'on');
+  valueHolder['2'] = new numValues(unitDigitValue = 'iki', tensDigitValue = 'yirmi');
+  valueHolder['3'] = new numValues(unitDigitValue = 'üç', tensDigitValue = 'otuz');
+  valueHolder['4'] = new numValues(unitDigitValue = 'dört', tensDigitValue = 'kırk');
+  valueHolder['5'] = new numValues(unitDigitValue = 'beş', tensDigitValue = 'elli');
+  valueHolder['6'] = new numValues(unitDigitValue = 'altı', tensDigitValue = 'altmış');
+  valueHolder['7'] = new numValues(unitDigitValue = 'yedi', tensDigitValue = 'yetmiş');
+  valueHolder['8'] = new numValues(unitDigitValue = 'sekiz', tensDigitValue = 'seksen');
+  valueHolder['9'] = new numValues(unitDigitValue = 'dokuz', tensDigitValue = 'doksan');
+
+  function convertToText(number) {
+    var tens;
+    var returnStr;
+    var returnStrs = [];
+    var lastWords = [];
+    var tempValueHolder;
+    var isPoint = false;
+    for (i = number.length - 1; i > -1; i--) {
+      var tempNumber = number[i];
+
+      if (tempNumber == ',' || tempNumber == '.' || i == 0) {
+        if (i == 0)
+          tempNumbers.push(tempNumber);
+        if (tempNumber == '.')
+          isPoint = true;
+        var tempTotalCount = tempNumbers.length;
+        var counter = 0;
+        //console.log(tempNumbers +" | " + isPoint);
+        while (tempNumbers.length > 0) {
+          counter++;
+          console.log(counter);
+          returnStr = getConditionResult(tempTotalCount, counter, tempNumbers.pop(), isPoint);
+        }
+        //console.log(returnStr);
+
+        if (tempNumber == ',' && returnStr != '')
+          returnStr = returnStr + " kuruş";
+        else if ((!isPoint && i >= 0))
+          returnStr = returnStr + " lira";
+
+        returnStrs.push(returnStr);
+        continue;
+      }
+      tempNumbers.push(tempNumber);
+    }
+    strstr = "";
+    while (returnStrs.length > 0) {
+      strstr = strstr + returnStrs.pop() + " ";
+    }
+    console.log(strstr);
+    return strstr;
+  }
+  function getConditionResult(tempTotalCount, counter, tempValue, isPoint) {
+    returnValue = '';
+    console.log(tempTotalCount + " " + counter + " " + tempValue + " " + isPoint);
+    if (tempTotalCount == 3) {
+      if (counter == 1) {
+        returnValue = valueHolder[tempValue].unitDigitValue;
+      }
+      else if (counter == 2) {
+        returnValue = valueHolder[tempValue].tensDigitValue;
+      }
+      else if (counter == 1) {
+        if (tempValue != '1')
+          returnValue = valueHolder[tempValue].unitDigitValue;
+        returnValue += " yüz "
+      }
+    }
+    else if (tempTotalCount == 2) {
+      if (counter == 2) {
+        returnValue = valueHolder[tempValue].unitDigitValue;
+      }
+      else if (counter == 1) {
+        returnValue = valueHolder[tempValue].tensDigitValue;
+      }
+    }
+    else if (tempTotalCount == 1) {
+      if (counter == 1) {
+        if (!isPoint) {
+          returnValue = valueHolder[tempValue].unitDigitValue;
+        }
+      }
+    }
+    console.log(returnValue);
+    if (isPoint)
+      return returnValue + " ";
+    else
+      return returnValue + " bin ";
+  }
+
+  var words = convertToText("489.475,50");
+  dataSourceArray = {
+    d: [
+      {
+        "productid": "LT-1449506",
+        "productName": "Super Outfit",
+        "productPrice": 300.45,
+        "qnty": 10
+      },
+      {
+        "productid": "LT-4523632",
+        "productName": "Rocket-Powered Roller Skates",
+        "productPrice": 11367.99,
+        "qnty": 4
+      },
+      {
+        "productid": "TM-2026045",
+        "productName": "Giant Kite Kit",
+        "productPrice": 1099.90,
+        "qnty": 12
+      },
+      {
+        "productid": "LT-1990790",
+        "productName": "Bird Seed",
+        "productPrice": 5.90,
+        "qnty": 55
+      },
+      {
+        "productid": "TLTS-8002604",
+        "productName": "Artificial Rock",
+        "productPrice": 123.99,
+        "qnty": 24
+      },
+      {
+        "productid": "TM-6792415",
+        "productName": "Giant Rubber Band V1",
+        "productPrice": 44.90,
+        "qnty": 5000
+      },
+      {
+        "productid": 'LT-8163469',
+        "productName": 'Jet Motor',
+        "productPrice": 99999.99,
+        "qnty": 2
+      }
+    ]
+  }
+
+  var strArr = ["Ürün kodu", "Ürün adı", "Birim Fiyat(TL)", "Adet", "Fiyat(TL)"]
+  var ntc = new NTCTable(dataSourceArray, strArr);
+  var strHtml = ntc.generateTableHtmlCode();
+  window.onload = function test() {
+    document.getElementById("test").innerHTML = strHtml;
+  }
+
+  // var price1 = dataSourceArray.d[0].productPrice * dataSourceArray.d[0].qnty;
+  var i;
+  var totalPrice = 0;
+  var writeTotal = "Toplam";
+  for (i = 0; i < dataSourceArray.d.length; i++) {
+    totalPrice += dataSourceArray.d[i].productPrice * dataSourceArray.d[i].qnty;
+  }
+  document.getElementById("myWrite").innerHTML = writeTotal;
+  document.getElementById("myTotal").innerHTML = totalPrice;
+  document.getElementById("myTL").innerHTML = "TL";
+  // console.log("Total Price: " + totalPrice);
+  // console.log(dataSourceArray.d.length);
+  // console.log(words);
+
+</script>
+
+<style>
+  .orderDetail {
+    background-color: #0983c5;
+    float: left;
+    width: 20%;
+    height: 100vh;
+    overflow: auto;
+  }
+</style>
+
+<!-- <body>
+
+  <div class="wrapper">
+
+  </div>
+
+
+  <script src="./NTCTable.js"></script>
+  <script>
+    data = [{
+      "productid": "LT-1449506",
+      "productName": "Super Outfit",
+      "productPrice": 300.45,
+      "qnty": 10
+    },
+    {
+      "productid": "LT-4523632",
+      "productName": "Rocket-Powered Roller Skates",
+      "productPrice": 11367.99,
+      "qnty": 4
+    },
+    {
+      "productid": "TM-2026045",
+      "productName": "Giant Kite Kit",
+      "productPrice": 1099.90,
+      "qnty": 12
+    },
+    {
+      "productid": "LT-1990790",
+      "productName": "Bird Seed",
+      "productPrice": 5.90,
+      "qnty": 55
+    },
+    {
+      "productid": "TLTS-8002604",
+      "productName": "Artificial Rock",
+      "productPrice": 123.99,
+      "qnty": 24
+    },
+    {
+      "productid": "TM-6792415",
+      "productName": "Giant Rubber Band V1",
+      "productPrice": 44.90,
+      "qnty": 5000
+    },
+    {
+      "productid": 'LT-8163469',
+      "productName": 'Jet Motor',
+      "productPrice": 99999.99,
+      "qnty": 2
+    }
+    ];
+    const deneme = new NTCTable(data, ["Ürün Kodu", "Ürün Adı", "Birim Fiyat(TL)", "Adet", "Fiyat(TL)"]);
+    document.body.innerHTML = deneme.generateInnerHtmlCode();
+  </script>
+</body> -->
+
+</html>
